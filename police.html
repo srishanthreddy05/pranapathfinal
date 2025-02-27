@@ -1,8 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accepted Requests for Police</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            text-align: center;
+        }
+        h2 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.3);
+        }
+        #requests {
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        .request {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            transition: transform 0.3s ease-in-out;
+            text-align: left;
+        }
+        .request:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.3);
+        }
+        .map {
+            width: 100%;
+            height: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #requests, .request, .map { animation: fadeIn 1s ease-in-out; }
+    </style>
     <script type="module">
         import { db, ref, onValue } from './firebase-config.js';
 
@@ -13,7 +71,6 @@
             onValue(ref(db, 'accepted'), (snapshot) => {
                 requestsContainer.innerHTML = '';
                 const acceptedRequests = snapshot.val();
-
                 if (acceptedRequests) {
                     for (let driverID in acceptedRequests) {
                         const request = acceptedRequests[driverID];
@@ -48,10 +105,10 @@
             requestElement.classList.add('request');
             requestElement.innerHTML = `
                 <p>🚑 Driver ID: ${driverID}</p>
-              <p>📞 Contact: ${userNumber}</p>
+                <p>📞 Contact: ${userNumber}</p>
                 <p>📍 Driver Location: (${driverLocation.latitude}, ${driverLocation.longitude})</p>
                 <p>📍 Patient Location: (${userLocation.latitude}, ${userLocation.longitude})</p>
-                <div class="map" id="map-${driverID}" style="width: 100%; height: 500px; margin-top: 10px;"></div>
+                <div class="map" id="map-${driverID}"></div>
             `;
             requestsContainer.appendChild(requestElement);
             showMap(driverID, driverLocation, userLocation);
@@ -59,7 +116,7 @@
 
         function showMap(driverID, driverLocation, userLocation) {
             const mapUrl = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA&origin=${driverLocation.latitude},${driverLocation.longitude}&destination=${userLocation.latitude},${userLocation.longitude}&mode=driving`;
-            document.getElementById(`map-${driverID}`).innerHTML = `<iframe width="100%" height="500px" src="${mapUrl}" allowfullscreen></iframe>`;
+            document.getElementById(`map-${driverID}`).innerHTML = `<iframe width="100%" height="300px" src="${mapUrl}" allowfullscreen></iframe>`;
         }
 
         document.addEventListener('DOMContentLoaded', loadAcceptedRequests);
