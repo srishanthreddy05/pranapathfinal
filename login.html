@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login - PranaPath</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - PranaPath</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
+        /* Gradient Background */
         body {
             display: flex;
             flex-direction: column;
@@ -11,35 +14,81 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #4CAF50, #2E8B57);
+            font-family: 'Arial', sans-serif;
             text-align: center;
-            width: 300px;
         }
-        select {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+
+        /* Glassmorphism Signup Box */
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 320px;
+            transition: transform 0.3s ease-in-out;
         }
-        button {
-            background-color: #4CAF50;
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        /* Heading */
+        h2 {
             color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        /* Dropdown & Button Styling */
+        select, button {
             width: 100%;
-            border-radius: 5px;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-size: 1rem;
+            border: none;
+            outline: none;
+            transition: all 0.3s ease-in-out;
+        }
+
+        select {
+            background: white;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        select:hover {
+            border-color: #ffcc00;
+        }
+
+        /* Button */
+        button {
+            background: #ffcc00;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         button:hover {
-            background-color: #45a049;
+            background: #ffa500;
+            transform: scale(1.05);
+        }
+
+        /* Smooth Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeIn 1s ease-in-out;
         }
     </style>
     <script>
@@ -52,14 +101,14 @@
 </head>
 <body>
     <div class="container">
-        <h2>Login as</h2>
+        <h2>🚀 Sign Up as</h2>
         <form onsubmit="event.preventDefault(); redirectToPage();">
             <select id="roleSelect">
                 <option value="user">User</option>
                 <option value="driver">Driver</option>
                 <option value="police">Traffic Police</option>
             </select>
-            <button type="submit">Login</button>
+            <button type="submit">Sign Up</button>
         </form>
     </div>
 </body>
