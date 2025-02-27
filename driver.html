@@ -1,8 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Driver Login & Requests</title>
     <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #2b5876, #4e4376);
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            background: white;
+            color: black;
+            text-align: center;
+        }
+
+        button {
+            width: 50%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .login-btn {
+            background: #ffcc00;
+            color: black;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .login-btn:hover {
+            background: #ffa500;
+            transform: scale(1.05);
+        }
+    </style>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA"></script>
     <script type="module">
         import { db, ref, set, onValue } from './firebase-config.js';
@@ -59,13 +123,11 @@
                     const driverLat = position.coords.latitude;
                     const driverLng = position.coords.longitude;
 
-                    // Save the accepted request
                     set(ref(db, `accepted/${driverID}`), {
                         driverID: driverID,
                         userNumber: userNumber,
                         driverLocation: { latitude: driverLat, longitude: driverLng }
                     }).then(() => {
-                        // Save driver's live location
                         set(ref(db, `drivers/${driverID}/location`), {
                             latitude: driverLat,
                             longitude: driverLng
@@ -119,14 +181,15 @@
 </head>
 <body>
     <section id="loginSection">
-        <form id="driverLoginForm" onsubmit="handleLogin(event)">
-            <div class="icon">🚓</div>
-            <h2>Driver Login</h2>
-            <input type="text" id="driverName" placeholder="Name" required>
-            <input type="text" id="driverNumber" placeholder="Phone Number" required>
-            <input type="text" id="driverID" placeholder="Driver ID" required>
-            <button type="submit">Login</button>
-        </form>
+        <div class="container">
+            <h2>🚓 Driver Login</h2>
+            <form id="driverLoginForm" onsubmit="handleLogin(event)">
+                <input type="text" id="driverName" placeholder="Name" required>
+                <input type="text" id="driverNumber" placeholder="Phone Number" required>
+                <input type="text" id="driverID" placeholder="Driver ID" required>
+                <button class="login-btn" type="submit">Login</button>
+            </form>
+        </div>
     </section>
 
     <section id="requestsSection" style="display: none;">
