@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Login with Location Capture</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input, button, select { padding: 10px; margin: 5px; width: 100%; }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBje44kEv3bsmIP_x5_LK2YkkKDq9hJFfU",
+            authDomain: "ambulancemanagementsystem0103.firebaseapp.com",
+            databaseURL: "https://ambulancemanagementsystem0103-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ambulancemanagementsystem0103",
+            storageBucket: "ambulancemanagementsystem0103.appspot.com",
+            messagingSenderId: "492214508421",
+            appId: "1:492214508421:web:f2b626eff3ae7c8b73c2ec"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let userNumber = "";
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const userName = document.getElementById('userName').value.trim();
+            userNumber = document.getElementById('userNumber').value.trim();
+            const userBloodGroup = document.getElementById('userBloodGroup').value;
+
+            if (!userName || !userNumber || !userBloodGroup) {
+                alert("Please fill all fields!");
+                return;
+            }
+
+            set(ref(db, 'users/' + userNumber), {
+                name: userName,
+                number: userNumber,
+                bloodGroup: userBloodGroup
+            }).then(() => {
+                alert("✅ Login successful! Data saved.");
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('bookingSection').style.display = 'block';
+            }).catch((error) => {
+                alert("❌ Error saving user data: " + error.message);
+            });
+        }
+
+        function sendRequest() {
+            if (!userNumber) {
+                alert("❌ Please login first!");
+                return;
+            }
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    
+                    set(ref(db, 'users/' + userNumber + '/location'), {
+                        latitude: latitude,
+                        longitude: longitude
+                    }).then(() => {
+                        alert("🚑 Ambulance request sent! Location stored.");
+                    }).catch((error) => {
+                        alert("❌ Error saving location: " + error.message);
+                    });
+                }, (error) => {
+                    console.error("Error fetching location: ", error);
+                    alert("❌ Failed to get location.");
+                }, { enableHighAccuracy: true });
+            } else {
+                alert("❌ Geolocation is not supported by this browser.");
+            }
+        }
+
+        window.handleLogin = handleLogin;
+        window.sendRequest = sendRequest;
+    </script>
+</head>
+<body>
+    <section id="loginSection">
+        <h2>User Login</h2>
+        <form id="userLoginForm" onsubmit="handleLogin(event)">
+            <input type="text" id="userName" placeholder="Name" required>
+            <input type="text" id="userNumber" placeholder="Phone Number" required>
+            <select id="userBloodGroup" required>
+                <option value="">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+            </select>
+            <button type="submit">Login</button>
+        </form>
+    </section>
+    
+    <section id="bookingSection" style="display: none;">
+        <h2>Book Ambulance</h2>
+        <button onclick="sendRequest()">Send Ambulance Request</button>
+        <button onclick="window.location.href='blood.html'">Check Blood Availability</button>
+        <button onclick="window.location.href='donate.html'">Donate Blood</button>
+    </section>
+</body>
+</html>

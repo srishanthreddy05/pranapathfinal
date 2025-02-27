@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Navigate to Patient</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBje44kEv3bsmIP_x5_LK2YkkKDq9hJFfU",
+            authDomain: "ambulancemanagementsystem0103.firebaseapp.com",
+            databaseURL: "https://ambulancemanagementsystem0103-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ambulancemanagementsystem0103",
+            storageBucket: "ambulancemanagementsystem0103.appspot.com",
+            messagingSenderId: "492214508421",
+            appId: "1:492214508421:web:f2b626eff3ae7c8b73c2ec"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let userLat, userLng, userName, userNumber, userBloodGroup;
+
+        async function fetchUserDetails() {
+            const driverID = localStorage.getItem('driverID');
+            if (!driverID) {
+                alert("Driver ID not found. Please log in again.");
+                return;
+            }
+
+            // Get the accepted user number for this driver
+            const acceptedRef = ref(db, `accepted/${driverID}`);
+            const acceptedSnapshot = await get(acceptedRef);
+
+            if (!acceptedSnapshot.exists()) {
+                document.getElementById('patientDetails').innerHTML = "<p>No accepted requests found.</p>";
+                return;
+            }
+
+            userNumber = acceptedSnapshot.val().userNumber;
+
+            // Fetch user details
+            const userRef = ref(db, `users/${userNumber}`);
+            const userSnapshot = await get(userRef);
+
+            if (!userSnapshot.exists()) {
+                document.getElementById('patientDetails').innerHTML = "<p>User data not found.</p>";
+                return;
+            }
+
+            const userData = userSnapshot.val();
+            userName = userData.name;
+            userBloodGroup = userData.bloodGroup;
+
+            if (userData.location) {
+                userLat = userData.location.latitude;
+                userLng = userData.location.longitude;
+            } else {
+                document.getElementById('patientDetails').innerHTML = "<p>Location data not available.</p>";
+                return;
+            }
+
+            // Update patient details on the page
+            document.getElementById('patientDetails').innerHTML = `
+                <p>👤 Name: ${userName}</p>
+                <p>📞 Phone: ${userNumber}</p>
+                <p>🩸 Blood Group: ${userBloodGroup}</p>
+                <p>📍 Location: ${userLat}, ${userLng}</p>
+            `;
+        }
+
+        function showMap() {
+            if (!userLat || !userLng) {
+                alert("User location not available.");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition((position) => {
+                const driverLat = position.coords.latitude;
+                const driverLng = position.coords.longitude;
+
+                const mapUrl = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA&origin=${driverLat},${driverLng}&destination=${userLat},${userLng}&mode=driving`;
+
+                document.getElementById('map').innerHTML = `<iframe width="100%" height="500px" src="${mapUrl}" allowfullscreen></iframe>`;
+            }, (error) => {
+                alert("Unable to get current location.");
+                console.error(error);
+            });
+        }
+
+        window.onload = fetchUserDetails;
+        window.showMap = showMap;
+    </script>
+</head>
+<body>
+    <h2>🚑 Navigate to Patient</h2>
+
+    <div id="patientDetails">
+        <p>Loading patient details...</p>
+    </div>
+
+    <button onclick="showMap()">📍 Navigate to Patient</button>
+
+    <!-- Google Maps Section -->
+    <div id="map" style="width: 100%; height: 500px; margin-top: 10px;"></div>
+</body>
+</html>

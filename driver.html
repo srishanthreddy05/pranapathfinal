@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Driver Login & Requests</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA"></script>
+    <script type="module">
+        import { db, ref, set, onValue } from './firebase-config.js';
+
+        function loadRequests() {
+            const requestsContainer = document.getElementById('requests');
+            requestsContainer.innerHTML = "<p>Loading...</p>";
+
+            onValue(ref(db, 'users'), (snapshot) => {
+                requestsContainer.innerHTML = '';
+                const users = snapshot.val();
+
+                if (users) {
+                    for (let key in users) {
+                        const user = users[key];
+                        if (user.location) { 
+                            const requestElement = document.createElement('div');
+                            requestElement.classList.add('request');
+                            requestElement.innerHTML = `
+                                <p>👤 Name: ${user.name}</p>
+                                <p>📞 Number: ${user.number}</p>
+                                <p>🩸 Blood Group: ${user.bloodGroup}</p>
+                                <p>📍 Location: (${user.location.latitude}, ${user.location.longitude})</p>
+                                <button class="accept-btn" data-id="${key}">✅ Accept</button>
+                            `;
+                            requestsContainer.appendChild(requestElement);
+                        }
+                    }
+
+                    document.querySelectorAll('.accept-btn').forEach(button => {
+                        button.addEventListener('click', (event) => {
+                            const userNumber = event.target.getAttribute('data-id');
+                            acceptRequest(userNumber);
+                        });
+                    });
+                } else {
+                    requestsContainer.innerHTML = '<p>No requests available.</p>';
+                }
+            }, (error) => {
+                requestsContainer.innerHTML = "<p>Error loading requests.</p>";
+                console.error("❌ Firebase Error:", error);
+            });
+        }
+
+        function acceptRequest(userNumber) {
+            const driverID = localStorage.getItem('driverID');
+            if (!driverID) {
+                alert("Driver ID not found. Please log in again.");
+                return;
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const driverLat = position.coords.latitude;
+                    const driverLng = position.coords.longitude;
+
+                    // Save the accepted request
+                    set(ref(db, `accepted/${driverID}`), {
+                        driverID: driverID,
+                        userNumber: userNumber,
+                        driverLocation: { latitude: driverLat, longitude: driverLng }
+                    }).then(() => {
+                        // Save driver's live location
+                        set(ref(db, `drivers/${driverID}/location`), {
+                            latitude: driverLat,
+                            longitude: driverLng
+                        });
+
+                        localStorage.setItem('acceptedUser', userNumber);
+                        window.location.href = "navigate.html";
+                    }).catch((error) => {
+                        alert("Error accepting request: " + error.message);
+                    });
+                }, (error) => {
+                    alert("Unable to get current location.");
+                    console.error("❌ Location Error:", error);
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const driverName = document.getElementById('driverName').value;
+            const driverNumber = document.getElementById('driverNumber').value;
+            const driverID = document.getElementById('driverID').value;
+
+            if (!driverName || !driverNumber || !driverID) {
+                alert("Please fill all fields!");
+                return;
+            }
+
+            set(ref(db, `drivers/${driverID}`), {
+                name: driverName,
+                number: driverNumber,
+                driverID: driverID
+            }).then(() => {
+                localStorage.setItem('driverID', driverID);
+                localStorage.setItem('driverName', driverName);
+                localStorage.setItem('driverNumber', driverNumber);
+
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('requestsSection').style.display = 'block';
+
+                loadRequests();
+            }).catch((error) => {
+                alert("Error saving driver details: " + error.message);
+            });
+        }
+
+        window.handleLogin = handleLogin;
+    </script>
+</head>
+<body>
+    <section id="loginSection">
+        <form id="driverLoginForm" onsubmit="handleLogin(event)">
+            <div class="icon">🚓</div>
+            <h2>Driver Login</h2>
+            <input type="text" id="driverName" placeholder="Name" required>
+            <input type="text" id="driverNumber" placeholder="Phone Number" required>
+            <input type="text" id="driverID" placeholder="Driver ID" required>
+            <button type="submit">Login</button>
+        </form>
+    </section>
+
+    <section id="requestsSection" style="display: none;">
+        <h2>🚨 Ambulance Requests</h2>
+        <div id="requests"></div>
+    </section>
+</body>
+</html>

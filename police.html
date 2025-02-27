@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Accepted Requests for Police</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script type="module">
+        import { db, ref, onValue } from './firebase-config.js';
+
+        function loadAcceptedRequests() {
+            const requestsContainer = document.getElementById('requests');
+            requestsContainer.innerHTML = "<p>Loading...</p>";
+
+            onValue(ref(db, 'accepted'), (snapshot) => {
+                requestsContainer.innerHTML = '';
+                const acceptedRequests = snapshot.val();
+
+                if (acceptedRequests) {
+                    for (let driverID in acceptedRequests) {
+                        const request = acceptedRequests[driverID];
+                        fetchDriverLocation(driverID, request.userNumber);
+                    }
+                } else {
+                    requestsContainer.innerHTML = '<p>No accepted requests available.</p>';
+                }
+            }, (error) => {
+                requestsContainer.innerHTML = "<p>Error loading requests.</p>";
+                console.error("❌ Firebase Error:", error);
+            });
+        }
+
+        function fetchDriverLocation(driverID, userNumber) {
+            const driverRef = ref(db, `drivers/${driverID}/location`);
+            const userRef = ref(db, `users/${userNumber}/location`);
+
+            Promise.all([
+                new Promise((resolve) => onValue(driverRef, (snapshot) => resolve(snapshot.val()), { onlyOnce: true })),
+                new Promise((resolve) => onValue(userRef, (snapshot) => resolve(snapshot.val()), { onlyOnce: true }))
+            ]).then(([driverLocation, userLocation]) => {
+                if (driverLocation && userLocation) {
+                    displayRequest(driverID, userNumber, driverLocation, userLocation);
+                }
+            }).catch(error => console.error("❌ Error fetching locations:", error));
+        }
+
+        function displayRequest(driverID, userNumber, driverLocation, userLocation) {
+            const requestsContainer = document.getElementById('requests');
+            const requestElement = document.createElement('div');
+            requestElement.classList.add('request');
+            requestElement.innerHTML = `
+                <p>🚑 Driver ID: ${driverID}</p>
+              <p>📞 Contact: ${userNumber}</p>
+                <p>📍 Driver Location: (${driverLocation.latitude}, ${driverLocation.longitude})</p>
+                <p>📍 Patient Location: (${userLocation.latitude}, ${userLocation.longitude})</p>
+                <div class="map" id="map-${driverID}" style="width: 100%; height: 500px; margin-top: 10px;"></div>
+            `;
+            requestsContainer.appendChild(requestElement);
+            showMap(driverID, driverLocation, userLocation);
+        }
+
+        function showMap(driverID, driverLocation, userLocation) {
+            const mapUrl = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA&origin=${driverLocation.latitude},${driverLocation.longitude}&destination=${userLocation.latitude},${userLocation.longitude}&mode=driving`;
+            document.getElementById(`map-${driverID}`).innerHTML = `<iframe width="100%" height="500px" src="${mapUrl}" allowfullscreen></iframe>`;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAcceptedRequests);
+    </script>
+</head>
+<body>
+    <h2>🚔 Police View - Accepted Ambulance Requests</h2>
+    <div id="requests"></div>
+</body>
+</html>

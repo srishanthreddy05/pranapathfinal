@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - PranaPath</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+        select {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function redirectToPage() {
+            var role = document.getElementById("roleSelect").value;
+            var page = role + ".html";
+            window.location.href = page;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Login as</h2>
+        <form onsubmit="event.preventDefault(); redirectToPage();">
+            <select id="roleSelect">
+                <option value="user">User</option>
+                <option value="driver">Driver</option>
+                <option value="police">Traffic Police</option>
+            </select>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>
