@@ -1,200 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Driver Login & Requests</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(to right, #2b5876, #4e4376);
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            color: white;
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 350px;
-            transition: transform 0.3s ease-in-out;
-        }
-        .container:hover {
-            transform: scale(1.02);
-        }
-
-        input {
-            width: 90%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 10px;
-            border: none;
-            outline: none;
-            font-size: 1rem;
-            background: white;
-            color: black;
-            text-align: center;
-        }
-
-        button {
-            width: 50%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .login-btn {
-            background: #ffcc00;
-            color: black;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        .login-btn:hover {
-            background: #ffa500;
-            transform: scale(1.05);
-        }
-    </style>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA"></script>
-    <script type="module">
-        import { db, ref, set, onValue } from './firebase-config.js';
-
-        function loadRequests() {
-            const requestsContainer = document.getElementById('requests');
-            requestsContainer.innerHTML = "<p>Loading...</p>";
-
-            onValue(ref(db, 'users'), (snapshot) => {
-                requestsContainer.innerHTML = '';
-                const users = snapshot.val();
-
-                if (users) {
-                    for (let key in users) {
-                        const user = users[key];
-                        if (user.location) { 
-                            const requestElement = document.createElement('div');
-                            requestElement.classList.add('request');
-                            requestElement.innerHTML = `
-                                <p>👤 Name: ${user.name}</p>
-                                <p>📞 Number: ${user.number}</p>
-                                <p>🩸 Blood Group: ${user.bloodGroup}</p>
-                                <p>📍 Location: (${user.location.latitude}, ${user.location.longitude})</p>
-                                <button class="accept-btn" data-id="${key}">✅ Accept</button>
-                            `;
-                            requestsContainer.appendChild(requestElement);
-                        }
-                    }
-
-                    document.querySelectorAll('.accept-btn').forEach(button => {
-                        button.addEventListener('click', (event) => {
-                            const userNumber = event.target.getAttribute('data-id');
-                            acceptRequest(userNumber);
-                        });
-                    });
-                } else {
-                    requestsContainer.innerHTML = '<p>No requests available.</p>';
-                }
-            }, (error) => {
-                requestsContainer.innerHTML = "<p>Error loading requests.</p>";
-                console.error("❌ Firebase Error:", error);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Driver Login & Requests</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(to right, #2b5876, #4e4376);
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      color: white;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      transition: transform 0.3s ease-in-out;
+      margin-bottom: 20px;
+    }
+    .container:hover {
+      transform: scale(1.02);
+    }
+    
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      background: white;
+      color: black;
+      text-align: center;
+    }
+    
+    button {
+      width: 50%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+    
+    .login-btn {
+      background: #ffcc00;
+      color: black;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .login-btn:hover {
+      background: #ffa500;
+      transform: scale(1.05);
+    }
+    
+    #requests {
+      width: 90%;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    
+    .request {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 10px;
+      margin: 10px 0;
+      padding: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      text-align: left;
+      transition: transform 0.3s ease-in-out;
+    }
+    .request:hover {
+      transform: scale(1.02);
+    }
+    .request p {
+      margin: 5px 0;
+      font-size: 1.1rem;
+    }
+    
+    .accept-btn {
+      background: #4CAF50;
+      color: white;
+      font-weight: bold;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      text-align: center;
+    }
+    .accept-btn:hover {
+      background: #45a049;
+    }
+  </style>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA"></script>
+  <script type="module">
+    import { db, ref, set, onValue } from './firebase-config.js';
+    
+    function loadRequests() {
+      const requestsContainer = document.getElementById('requests');
+      requestsContainer.innerHTML = "<p>Loading...</p>";
+      
+      onValue(ref(db, 'users'), (snapshot) => {
+        requestsContainer.innerHTML = '';
+        const users = snapshot.val();
+        
+        if (users) {
+          for (let key in users) {
+            const user = users[key];
+            if (user.location) {
+              const requestElement = document.createElement('div');
+              requestElement.classList.add('request');
+              requestElement.innerHTML = `
+                <p><strong>Name:</strong> ${user.name}</p>
+                <p><strong>Phone:</strong> ${user.number}</p>
+                <p><strong>Blood Group:</strong> ${user.bloodGroup}</p>
+                <p><strong>Location:</strong> (${user.location.latitude}, ${user.location.longitude})</p>
+                <button class="accept-btn" data-id="${key}">✅ Accept Request</button>
+              `;
+              requestsContainer.appendChild(requestElement);
+            }
+          }
+    
+          document.querySelectorAll('.accept-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+              const userNumber = event.target.getAttribute('data-id');
+              acceptRequest(userNumber);
             });
+          });
+        } else {
+          requestsContainer.innerHTML = '<p>No requests available.</p>';
         }
-
-        function acceptRequest(userNumber) {
-            const driverID = localStorage.getItem('driverID');
-            if (!driverID) {
-                alert("Driver ID not found. Please log in again.");
-                return;
-            }
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const driverLat = position.coords.latitude;
-                    const driverLng = position.coords.longitude;
-
-                    set(ref(db, `accepted/${driverID}`), {
-                        driverID: driverID,
-                        userNumber: userNumber,
-                        driverLocation: { latitude: driverLat, longitude: driverLng }
-                    }).then(() => {
-                        set(ref(db, `drivers/${driverID}/location`), {
-                            latitude: driverLat,
-                            longitude: driverLng
-                        });
-
-                        localStorage.setItem('acceptedUser', userNumber);
-                        window.location.href = "navigate.html";
-                    }).catch((error) => {
-                        alert("Error accepting request: " + error.message);
-                    });
-                }, (error) => {
-                    alert("Unable to get current location.");
-                    console.error("❌ Location Error:", error);
-                });
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
-        }
-
-        function handleLogin(event) {
-            event.preventDefault();
-            const driverName = document.getElementById('driverName').value;
-            const driverNumber = document.getElementById('driverNumber').value;
-            const driverID = document.getElementById('driverID').value;
-
-            if (!driverName || !driverNumber || !driverID) {
-                alert("Please fill all fields!");
-                return;
-            }
-
-            set(ref(db, `drivers/${driverID}`), {
-                name: driverName,
-                number: driverNumber,
-                driverID: driverID
-            }).then(() => {
-                localStorage.setItem('driverID', driverID);
-                localStorage.setItem('driverName', driverName);
-                localStorage.setItem('driverNumber', driverNumber);
-
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('requestsSection').style.display = 'block';
-
-                loadRequests();
-            }).catch((error) => {
-                alert("Error saving driver details: " + error.message);
+      }, (error) => {
+        requestsContainer.innerHTML = "<p>Error loading requests.</p>";
+        console.error("❌ Firebase Error:", error);
+      });
+    }
+    
+    function acceptRequest(userNumber) {
+      const driverID = localStorage.getItem('driverID');
+      if (!driverID) {
+        alert("Driver ID not found. Please log in again.");
+        return;
+      }
+    
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const driverLat = position.coords.latitude;
+          const driverLng = position.coords.longitude;
+    
+          set(ref(db, `accepted/${driverID}`), {
+            driverID: driverID,
+            userNumber: userNumber,
+            driverLocation: { latitude: driverLat, longitude: driverLng }
+          }).then(() => {
+            set(ref(db, `drivers/${driverID}/location`), {
+              latitude: driverLat,
+              longitude: driverLng
             });
-        }
-
-        window.handleLogin = handleLogin;
-    </script>
+    
+            localStorage.setItem('acceptedUser', userNumber);
+            window.location.href = "navigate.html";
+          }).catch((error) => {
+            alert("Error accepting request: " + error.message);
+          });
+        }, (error) => {
+          alert("Unable to get current location.");
+          console.error("❌ Location Error:", error);
+        });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+    
+    function handleLogin(event) {
+      event.preventDefault();
+      const driverName = document.getElementById('driverName').value;
+      const driverNumber = document.getElementById('driverNumber').value;
+      const driverID = document.getElementById('driverID').value;
+    
+      if (!driverName || !driverNumber || !driverID) {
+        alert("Please fill all fields!");
+        return;
+      }
+    
+      set(ref(db, `drivers/${driverID}`), {
+        name: driverName,
+        number: driverNumber,
+        driverID: driverID
+      }).then(() => {
+        localStorage.setItem('driverID', driverID);
+        localStorage.setItem('driverName', driverName);
+        localStorage.setItem('driverNumber', driverNumber);
+    
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('requestsSection').style.display = 'block';
+    
+        loadRequests();
+      }).catch((error) => {
+        alert("Error saving driver details: " + error.message);
+      });
+    }
+    
+    window.handleLogin = handleLogin;
+  </script>
 </head>
 <body>
-    <section id="loginSection">
-        <div class="container">
-            <h2>🚓 Driver Login</h2>
-            <form id="driverLoginForm" onsubmit="handleLogin(event)">
-                <input type="text" id="driverName" placeholder="Name" required>
-                <input type="text" id="driverNumber" placeholder="Phone Number" required>
-                <input type="text" id="driverID" placeholder="Driver ID" required>
-                <button class="login-btn" type="submit">Login</button>
-            </form>
-        </div>
-    </section>
-
-    <section id="requestsSection" style="display: none;">
-        <h2>🚨 Ambulance Requests</h2>
-        <div id="requests"></div>
-    </section>
+  <section id="loginSection">
+    <div class="container">
+      <h2>🚓 Driver Login</h2>
+      <form id="driverLoginForm" onsubmit="handleLogin(event)">
+        <input type="text" id="driverName" placeholder="Name" required />
+        <input type="text" id="driverNumber" placeholder="Phone Number" required />
+        <input type="text" id="driverID" placeholder="Driver ID" required />
+        <button class="login-btn" type="submit">Login</button>
+      </form>
+    </div>
+  </section>
+  
+  <section id="requestsSection" style="display: none;">
+    <h2>🚨 Ambulance Requests</h2>
+    <div id="requests"></div>
+  </section>
 </body>
 </html>
