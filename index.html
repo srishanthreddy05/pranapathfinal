@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PranaPath</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
+        /* Gradient Background */
         body {
             display: flex;
             flex-direction: column;
@@ -11,23 +14,75 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
-        }
-        nav a {
-            margin: 10px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            background: linear-gradient(to right, #4CAF50, #2E8B57);
+            font-family: 'Arial', sans-serif;
             color: white;
-            text-decoration: none;
-            border-radius: 5px;
+            text-align: center;
+            overflow: hidden;
         }
+
+        /* Sliding Title */
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: slideIn 1.5s ease-out;
+            white-space: nowrap;
+        }
+
+        /* Navigation Buttons */
+        nav {
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 1.5s forwards;
+        }
+
+        nav a {
+            padding: 12px 25px;
+            background: white;
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
         nav a:hover {
-            background-color: #45a049;
+            background: #ffcc00;
+            color: black;
+            transform: scale(1.1);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Sliding Animation */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>PranaPath</h1>
+    <h1>🚑 PranaPath</h1>
     <nav>
         <a href="login.html">Login</a>
         <a href="signup.html">Sign Up</a>
