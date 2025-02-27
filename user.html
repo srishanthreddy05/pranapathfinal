@@ -1,16 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login with Location Capture</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        input, button, select { padding: 10px; margin: 5px; width: 100%; }
+        /* Background Gradient */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #4CAF50, #2E8B57);
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+        }
+
+        /* Glassmorphism Effect */
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 320px;
+            transition: transform 0.3s ease-in-out;
+            color: white;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        /* Input Fields */
+        input {
+            width: 95%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Styling */
+        button {
+            width: 80%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Login Button */
+        .login-btn {
+            background: #ffcc00;
+            color: black;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .login-btn:hover {
+            background: #ffa500;
+            transform: scale(1.05);
+        }
+
+        /* Ambulance Request Button */
+        .request-btn {
+            background: red;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+        .request-btn:hover {
+            background: darkred;
+            transform: scale(1.05);
+        }
+
+        /* Fade-In Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeIn 1s ease-in-out;
+        }
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA"></script>
+
+    <!-- Load Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA"></script>
+    
+    <!-- Firebase SDKs -->
     <script type="module" src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
     
     <script type="module">
+        // Firebase configuration
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
         import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
@@ -24,20 +122,22 @@
             appId: "1:492214508421:web:f2b626eff3ae7c8b73c2ec"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
         let userNumber = "";
 
+        // Handle user login
         function handleLogin(event) {
             event.preventDefault();
             
             const userName = document.getElementById('userName').value.trim();
             userNumber = document.getElementById('userNumber').value.trim();
-            const userBloodGroup = document.getElementById('userBloodGroup').value;
+            const userBloodGroup = document.getElementById('userBloodGroup').value.trim();
 
             if (!userName || !userNumber || !userBloodGroup) {
-                alert("Please fill all fields!");
+                alert("⚠ Please fill all fields!");
                 return;
             }
 
@@ -56,7 +156,7 @@
 
         function sendRequest() {
             if (!userNumber) {
-                alert("❌ Please login first!");
+                alert("⚠ Please login first!");
                 return;
             }
             
@@ -87,31 +187,37 @@
     </script>
 </head>
 <body>
+    <!-- User Login Section -->
     <section id="loginSection">
-        <h2>User Login</h2>
-        <form id="userLoginForm" onsubmit="handleLogin(event)">
-            <input type="text" id="userName" placeholder="Name" required>
-            <input type="text" id="userNumber" placeholder="Phone Number" required>
-            <select id="userBloodGroup" required>
-                <option value="">Select Blood Group</option>
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-                <option value="O+">O+</option>
-                <option value="O-">O-</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-            </select>
-            <button type="submit">Login</button>
-        </form>
+        <div class="container">
+            <h2>🔑 User Login</h2>
+            <form id="userLoginForm" onsubmit="handleLogin(event)">
+                <input type="text" id="userName" placeholder="👤 Name" required>
+                <input type="text" id="userNumber" placeholder="📞 Phone Number" required>
+                <select id="userBloodGroup" required>
+                    <option value="">🩸 Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
+                <button class="login-btn" type="submit">Login</button>
+            </form>
+        </div>
     </section>
     
+    <!-- Ambulance Booking Section -->
     <section id="bookingSection" style="display: none;">
-        <h2>Book Ambulance</h2>
-        <button onclick="sendRequest()">Send Ambulance Request</button>
-        <button onclick="window.location.href='blood.html'">Check Blood Availability</button>
-        <button onclick="window.location.href='donate.html'">Donate Blood</button>
+        <div class="container">
+            <h2>🚑 Book Ambulance</h2>
+            <button class="request-btn" onclick="sendRequest()">Send Ambulance Request</button>
+            <button onclick="window.location.href='blood.html'">Check Blood Availability</button>
+            <button onclick="window.location.href='donate.html'">Donate Blood</button>
+        </div>
     </section>
 </body>
 </html>
