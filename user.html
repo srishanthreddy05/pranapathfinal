@@ -36,7 +36,7 @@
         }
 
         /* Input Fields */
-        input {
+        input, select {
             width: 95%;
             padding: 12px;
             margin: 10px 0;
@@ -170,6 +170,8 @@
                         longitude: longitude
                     }).then(() => {
                         alert("🚑 Ambulance request sent! Location stored.");
+                        // Redirect to waiting page
+                        window.location.href = 'waiting.html';
                     }).catch((error) => {
                         alert("❌ Error saving location: " + error.message);
                     });
