@@ -7,6 +7,7 @@
 
     <!-- External Styles -->
     <link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <!-- Custom Styles -->
     <style>
@@ -14,77 +15,223 @@
         body {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            background: linear-gradient(to right, #0f2027, #203a43, #2c5364); /* Modern Dark Gradient */
-            font-family: 'Arial', sans-serif;
+            padding: 20px 0;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             color: white;
+            overflow-x: hidden;
         }
 
-        /* Page Title */
-        h2 {
-            font-size: 2rem;
+        /* Header Section */
+        .header {
+            margin-bottom: 30px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .header h2 {
+            font-size: 2.5rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.3);
+            letter-spacing: 2px;
+            margin: 0;
+            text-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(45deg, #fff, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        /* Patient Details */
-        #patientDetails {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #00ff00;
+            border-radius: 50%;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        /* Patient Details Card */
+        .patient-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 450px;
+            margin-bottom: 25px;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .patient-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .patient-info {
+            display: grid;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.1rem;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-icon {
+            width: 25px;
+            margin-right: 15px;
+            color: #ffcc00;
+            font-size: 1.2rem;
+        }
+
+        .info-label {
+            font-weight: 600;
+            margin-right: 10px;
+            min-width: 80px;
+        }
+
+        .info-value {
+            color: #e0e0e0;
+        }
+
+        /* Distance Display */
+        .distance-card {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 80%;
-            max-width: 400px;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            justify-items: left;
-            transition: transform 0.3s ease-in-out;
-        }
-        #patientDetails:hover {
-            transform: scale(1.02);
+            margin: 20px 0;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+            animation: fadeInUp 1s ease-out 0.4s both;
         }
 
-        /* Navigation Button */
-        button {
-            background: #ffcc00;
-            color: black;
-            font-size: 1.2rem;
+        .distance-info {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .eta-info {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation Controls */
+        .nav-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .nav-button {
+            background: linear-gradient(45deg, #ffcc00, #ffa500);
+            color: #333;
+            font-size: 1.1rem;
             font-weight: bold;
             border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
+            padding: 15px 25px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        button:hover {
-            background: #ffa500;
-            transform: scale(1.05);
+
+        .nav-button:hover {
+            background: linear-gradient(45deg, #ffa500, #ff8c00);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 204, 0, 0.6);
+        }
+
+        .nav-button:active {
+            transform: translateY(0);
+        }
+
+        .refresh-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .refresh-btn:hover {
+            background: linear-gradient(45deg, #44a08d, #3a8b7a);
         }
 
         /* Map Section */
-        #map {
-            width: 90%;
-            max-width: 800px;
-            height: 500px;
+        .map-container {
+            width: 95%;
+            max-width: 1000px;
             margin-top: 20px;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease-out 0.8s both;
         }
 
-        /* Animation */
-        @keyframes fadeIn {
+        #map {
+            width: 100%;
+            height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #map iframe {
+            border: none;
+            border-radius: 18px;
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffcc00;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        /* Emergency Alert */
+        .emergency-alert {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            animation: emergencyPulse 2s infinite;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -92,8 +239,55 @@
             }
         }
 
-        #patientDetails, button, #map {
-            animation: fadeIn 1s ease-in-out;
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes emergencyPulse {
+            0%, 100% { box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 5px 25px rgba(231, 76, 60, 0.8); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h2 {
+                font-size: 2rem;
+            }
+            
+            .patient-card {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .nav-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-button {
+                width: 80%;
+                justify-content: center;
+            }
+            
+            #map {
+                height: 400px;
+            }
         }
     </style>
 
@@ -117,88 +311,234 @@
         const db = getDatabase(app);
 
         let userLat, userLng, userName, userNumber, userBloodGroup;
+        let driverLat, driverLng;
+        let distance = null;
+
+        // Calculate distance between two points using Haversine formula
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c;
+            return distance;
+        }
+
+        // Estimate travel time based on distance (rough calculation)
+        function estimateTravelTime(distanceKm) {
+            const averageSpeed = 40; // km/h for emergency vehicle in city
+            const timeHours = distanceKm / averageSpeed;
+            const timeMinutes = Math.round(timeHours * 60);
+            return timeMinutes;
+        }
+
+        // Get current driver location
+        function getCurrentLocation() {
+            return new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        driverLat = position.coords.latitude;
+                        driverLng = position.coords.longitude;
+                        resolve({ lat: driverLat, lng: driverLng });
+                    },
+                    (error) => {
+                        reject(error);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 60000
+                    }
+                );
+            });
+        }
+
+        // Update distance display
+        function updateDistance() {
+            if (!driverLat || !driverLng || !userLat || !userLng) {
+                return;
+            }
+
+            distance = calculateDistance(driverLat, driverLng, userLat, userLng);
+            const eta = estimateTravelTime(distance);
+            
+            const distanceCard = document.getElementById('distanceCard');
+            distanceCard.innerHTML = `
+                <div class="distance-info">
+                    <i class="fas fa-route"></i> ${distance.toFixed(2)} km away
+                </div>
+                <div class="eta-info">
+                    <i class="fas fa-clock"></i> ETA: ~${eta} minutes
+                </div>
+            `;
+            distanceCard.style.display = 'block';
+        }
 
         async function fetchUserDetails() {
-            const driverID = localStorage.getItem('driverID');
-            if (!driverID) {
-                alert("Driver ID not found. Please log in again.");
-                return;
+            const patientDetails = document.getElementById('patientDetails');
+            patientDetails.innerHTML = '<div class="loading"><div class="spinner"></div>Loading patient details...</div>';
+
+            try {
+                const driverID = localStorage.getItem('driverID');
+                if (!driverID) {
+                    throw new Error("Driver ID not found. Please log in again.");
+                }
+
+                // Get current driver location
+                await getCurrentLocation();
+
+                // Get the accepted user number for this driver
+                const acceptedRef = ref(db, `accepted/${driverID}`);
+                const acceptedSnapshot = await get(acceptedRef);
+
+                if (!acceptedSnapshot.exists()) {
+                    patientDetails.innerHTML = "<p><i class='fas fa-exclamation-triangle'></i> No accepted requests found.</p>";
+                    return;
+                }
+
+                userNumber = acceptedSnapshot.val().userNumber;
+
+                // Fetch user details
+                const userRef = ref(db, `users/${userNumber}`);
+                const userSnapshot = await get(userRef);
+
+                if (!userSnapshot.exists()) {
+                    patientDetails.innerHTML = "<p><i class='fas fa-user-times'></i> User data not found.</p>";
+                    return;
+                }
+
+                const userData = userSnapshot.val();
+                userName = userData.name;
+                userBloodGroup = userData.bloodGroup;
+
+                if (userData.location) {
+                    userLat = userData.location.latitude;
+                    userLng = userData.location.longitude;
+                } else {
+                    patientDetails.innerHTML = "<p><i class='fas fa-map-marker-alt'></i> Location data not available.</p>";
+                    return;
+                }
+
+                // Update patient details on the page
+                patientDetails.innerHTML = `
+                    <div class="patient-info">
+                        <div class="info-row">
+                            <div class="info-icon"><i class="fas fa-user"></i></div>
+                            <div class="info-label">Name:</div>
+                            <div class="info-value">${userName}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="fas fa-phone"></i></div>
+                            <div class="info-label">Phone:</div>
+                            <div class="info-value">${userNumber}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="fas fa-tint"></i></div>
+                            <div class="info-label">Blood:</div>
+                            <div class="info-value">${userBloodGroup}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="info-label">Location:</div>
+                            <div class="info-value">${userLat.toFixed(6)}, ${userLng.toFixed(6)}</div>
+                        </div>
+                    </div>
+                `;
+
+                // Calculate and display distance
+                updateDistance();
+
+            } catch (error) {
+                patientDetails.innerHTML = `<p><i class='fas fa-exclamation-triangle'></i> Error: ${error.message}</p>`;
+                console.error('Error fetching user details:', error);
             }
-
-            // Get the accepted user number for this driver
-            const acceptedRef = ref(db, `accepted/${driverID}`);
-            const acceptedSnapshot = await get(acceptedRef);
-
-            if (!acceptedSnapshot.exists()) {
-                document.getElementById('patientDetails').innerHTML = "<p>No accepted requests found.</p>";
-                return;
-            }
-
-            userNumber = acceptedSnapshot.val().userNumber;
-
-            // Fetch user details
-            const userRef = ref(db, `users/${userNumber}`);
-            const userSnapshot = await get(userRef);
-
-            if (!userSnapshot.exists()) {
-                document.getElementById('patientDetails').innerHTML = "<p>User data not found.</p>";
-                return;
-            }
-
-            const userData = userSnapshot.val();
-            userName = userData.name;
-            userBloodGroup = userData.bloodGroup;
-
-            if (userData.location) {
-                userLat = userData.location.latitude;
-                userLng = userData.location.longitude;
-            } else {
-                document.getElementById('patientDetails').innerHTML = "<p>Location data not available.</p>";
-                return;
-            }
-
-            // Update patient details on the page
-            document.getElementById('patientDetails').innerHTML = `
-                <p>👤 Name: ${userName}</p>
-                <p>📞 Phone: ${userNumber}</p>
-                <p>🩸 Blood Group: ${userBloodGroup}</p>
-                <p>📍 Location: ${userLat}, ${userLng}</p>
-            `;
         }
 
         function showMap() {
             if (!userLat || !userLng) {
-                alert("User location not available.");
+                alert("Patient location not available.");
                 return;
             }
 
-            navigator.geolocation.getCurrentPosition((position) => {
-                const driverLat = position.coords.latitude;
-                const driverLng = position.coords.longitude;
+            if (!driverLat || !driverLng) {
+                alert("Unable to get your current location. Please refresh and try again.");
+                return;
+            }
 
-                const mapUrl = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA&origin=${driverLat},${driverLng}&destination=${userLat},${userLng}&mode=driving`;
+            const mapUrl = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA&origin=${driverLat},${driverLng}&destination=${userLat},${userLng}&mode=driving`;
 
-                document.getElementById('map').innerHTML = `<iframe width="100%" height="500px" src="${mapUrl}" allowfullscreen></iframe>`;
-            }, (error) => {
-                alert("Unable to get current location.");
-                console.error(error);
+            document.getElementById('map').innerHTML = `<iframe width="100%" height="500px" src="${mapUrl}" allowfullscreen loading="lazy"></iframe>`;
+        }
+
+        function refreshLocation() {
+            getCurrentLocation().then(() => {
+                updateDistance();
+                alert(`Location updated! You are ${distance ? distance.toFixed(2) + ' km' : ''} from the patient.`);
+            }).catch((error) => {
+                alert("Unable to update location. Please try again.");
+                console.error('Geolocation error:', error);
             });
         }
 
+        function callPatient() {
+            if (userNumber) {
+                window.open(`tel:${userNumber}`, '_self');
+            } else {
+                alert("Patient phone number not available.");
+            }
+        }
+
+        // Auto-refresh location every 30 seconds
+        setInterval(() => {
+            if (driverLat && driverLng && userLat && userLng) {
+                getCurrentLocation().then(updateDistance).catch(console.error);
+            }
+        }, 30000);
+
         window.onload = fetchUserDetails;
         window.showMap = showMap;
+        window.refreshLocation = refreshLocation;
+        window.callPatient = callPatient;
     </script>
 </head>
 <body>
-    <h2>🚑 Navigate to Patient</h2>
-
-    <div id="patientDetails">
-        <p>Loading patient details...</p>
+    <div class="header">
+        <h2><i class="fas fa-ambulance"></i> Navigate to Patient <span class="status-indicator"></span></h2>
     </div>
 
-    <button onclick="showMap()">📍 Navigate to Patient</button>
+    <div class="emergency-alert">
+        <i class="fas fa-exclamation-triangle"></i> Emergency Response Active
+    </div>
+
+    <div class="patient-card" id="patientDetails">
+        <div class="loading">
+            <div class="spinner"></div>
+            Loading patient details...
+        </div>
+    </div>
+
+    <div class="distance-card" id="distanceCard" style="display: none;">
+        <!-- Distance information will be populated here -->
+    </div>
+
+    <div class="nav-controls">
+        <button class="nav-button" onclick="showMap()">
+            <i class="fas fa-route"></i> Navigate to Patient
+        </button>
+        <button class="nav-button refresh-btn" onclick="refreshLocation()">
+            <i class="fas fa-sync-alt"></i> Update Location
+        </button>
+        <button class="nav-button" onclick="callPatient()" style="background: linear-gradient(45deg, #27ae60, #2ecc71);">
+            <i class="fas fa-phone"></i> Call Patient
+        </button>
+    </div>
 
     <!-- Google Maps Section -->
-    <div id="map"></div>
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
 </body>
 </html>
