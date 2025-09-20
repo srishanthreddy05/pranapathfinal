@@ -3,177 +3,750 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Driver Login & Requests</title>
+  <title>Driver Dashboard - Ambulance Management</title>
   <link rel="stylesheet" href="assets/css/styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .driver-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 0.9rem;
+    }
+
+    .logout-btn {
+      background: linear-gradient(45deg, #ff4757, #ff3838);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+    }
+
+    /* Main Container */
+    .main-container {
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      background: linear-gradient(to right, #2b5876, #4e4376);
-      font-family: 'Arial', sans-serif;
-      text-align: center;
-      color: white;
+      padding: 2rem;
+      min-height: calc(100vh - 80px);
     }
-    
-    .container {
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      padding: 30px;
+
+    /* Login Section */
+    .login-container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      padding: 3rem 2.5rem;
+      border-radius: 25px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 450px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      animation: slideUp 0.8s ease-out;
+      text-align: center;
+    }
+
+    .login-title {
+      font-size: 2.2rem;
+      margin-bottom: 2rem;
+      background: linear-gradient(45deg, #fff, #f1c40f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: none;
       border-radius: 15px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      width: 350px;
-      transition: transform 0.3s ease-in-out;
-      margin-bottom: 20px;
-    }
-    .container:hover {
-      transform: scale(1.02);
-    }
-    
-    input {
-      width: 90%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      font-size: 1rem;
       outline: none;
-      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
       background: white;
-      color: black;
-      text-align: center;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
-    
-    button {
-      width: 50%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s ease-in-out;
-    }
-    
-    .login-btn {
-      background: #ffcc00;
-      color: black;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-    .login-btn:hover {
-      background: #ffa500;
-      transform: scale(1.05);
-    }
-    
-    #requests {
-      width: 90%;
-      max-height: 60vh;
-      overflow-y: auto;
-      padding: 10px;
-    }
-    
-    .request {
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      border-radius: 10px;
-      margin: 10px 0;
-      padding: 15px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      text-align: left;
-      transition: transform 0.3s ease-in-out;
-    }
-    .request:hover {
-      transform: scale(1.02);
-    }
-    .request p {
-      margin: 5px 0;
+
+    .form-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
       font-size: 1.1rem;
     }
-    
-    .accept-btn {
-      background: #4CAF50;
-      color: white;
-      font-weight: bold;
-      padding: 12px;
+
+    .login-btn {
       width: 100%;
-      border-radius: 10px;
+      padding: 1rem;
+      background: linear-gradient(45deg, #f1c40f, #f39c12);
+      color: #333;
+      border: none;
+      border-radius: 15px;
+      font-size: 1.1rem;
+      font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s ease-in-out;
-      text-align: center;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
     }
+
+    .login-btn:hover {
+      background: linear-gradient(45deg, #f39c12, #e67e22);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(241, 196, 15, 0.4);
+    }
+
+    /* Requests Section */
+    .requests-container {
+      width: 100%;
+      max-width: 1200px;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .requests-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .requests-title {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(45deg, #fff, #e74c3c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .requests-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 1rem 1.5rem;
+      border-radius: 15px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #f1c40f;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 25px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+    }
+
+    /* Requests Grid */
+    .requests-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .request-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .request-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .request-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+    }
+
+    .request-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .priority-badge {
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      animation: emergencyPulse 2s infinite;
+    }
+
+    .request-time {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .patient-info {
+      margin-bottom: 1.5rem;
+    }
+
+    .info-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+    }
+
+    .info-icon {
+      width: 20px;
+      margin-right: 1rem;
+      color: #f1c40f;
+      font-size: 1.1rem;
+    }
+
+    .info-label {
+      font-weight: 600;
+      margin-right: 0.5rem;
+      min-width: 80px;
+    }
+
+    .info-value {
+      color: #ecf0f1;
+    }
+
+    /* Location & Distance */
+    .location-info {
+      background: rgba(52, 152, 219, 0.2);
+      border-radius: 15px;
+      padding: 1rem;
+      margin: 1rem 0;
+      border: 1px solid rgba(52, 152, 219, 0.3);
+    }
+
+    .destination-address {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      opacity: 0.9;
+      line-height: 1.4;
+    }
+
+    .distance-badge {
+      background: linear-gradient(45deg, #27ae60, #2ecc71);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 15px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    /* Action Buttons */
+    .request-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .accept-btn {
+      background: linear-gradient(45deg, #27ae60, #2ecc71);
+      color: white;
+    }
+
     .accept-btn:hover {
-      background: #45a049;
+      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+    }
+
+    .view-btn {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      color: white;
+    }
+
+    .view-btn:hover {
+      background: linear-gradient(45deg, #2980b9, #3498db);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+    }
+
+    /* Loading States */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      font-size: 1.2rem;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #f1c40f;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 1rem;
+    }
+
+    .no-requests {
+      text-align: center;
+      padding: 3rem;
+      opacity: 0.8;
+    }
+
+    .no-requests i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Animations */
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes emergencyPulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(231, 76, 60, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(231, 76, 60, 0.8); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 1rem;
+      }
+
+      .login-container {
+        padding: 2rem 1.5rem;
+      }
+
+      .requests-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .request-actions {
+        flex-direction: column;
+      }
+
+      .requests-stats {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .filters {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+      }
     }
   </style>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1ZnITeqwr7gt6pMeGfnlR-EBL1kYPbXA&libraries=geocoding"></script>
   <script type="module">
     import { db, ref, set, onValue } from './firebase-config.js';
     
-    function loadRequests() {
-      const requestsContainer = document.getElementById('requests');
-      requestsContainer.innerHTML = "<p>Loading...</p>";
-      
-      onValue(ref(db, 'users'), (snapshot) => {
-        requestsContainer.innerHTML = '';
-        const users = snapshot.val();
-        
-        if (users) {
-          for (let key in users) {
-            const user = users[key];
-            if (user.location) {
-              const requestElement = document.createElement('div');
-              requestElement.classList.add('request');
-              requestElement.innerHTML = `
-                <p><strong>Name:</strong> ${user.name}</p>
-                <p><strong>Phone:</strong> ${user.number}</p>
-                <p><strong>Blood Group:</strong> ${user.bloodGroup}</p>
-                <p><strong>Location:</strong> (${user.location.latitude}, ${user.location.longitude})</p>
-                <button class="accept-btn" data-id="${key}">✅ Accept Request</button>
-              `;
-              requestsContainer.appendChild(requestElement);
-            }
-          }
-    
-          document.querySelectorAll('.accept-btn').forEach(button => {
-            button.addEventListener('click', (event) => {
-              const userNumber = event.target.getAttribute('data-id');
-              acceptRequest(userNumber);
-            });
-          });
-        } else {
-          requestsContainer.innerHTML = '<p>No requests available.</p>';
-        }
-      }, (error) => {
-        requestsContainer.innerHTML = "<p>Error loading requests.</p>";
-        console.error("❌ Firebase Error:", error);
+    let currentFilter = 'all';
+    let allRequests = [];
+    let driverLocation = null;
+
+    // Get driver's current location
+    function getCurrentLocation() {
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            driverLocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            resolve(driverLocation);
+          },
+          (error) => reject(error),
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+        );
       });
     }
-    
+
+    // Calculate distance using Haversine formula
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+          Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    // Get address from coordinates using reverse geocoding
+    function getAddressFromCoords(lat, lng) {
+      return new Promise((resolve) => {
+        const geocoder = new google.maps.Geocoder();
+        const latlng = { lat: parseFloat(lat), lng: parseFloat(lng) };
+        
+        geocoder.geocode({ location: latlng }, (results, status) => {
+          if (status === 'OK' && results[0]) {
+            resolve(results[0].formatted_address);
+          } else {
+            resolve(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
+          }
+        });
+      });
+    }
+
+    // Format time ago
+    function getTimeAgo(timestamp) {
+      if (!timestamp) return 'Just now';
+      const now = Date.now();
+      const diff = now - timestamp;
+      const minutes = Math.floor(diff / 60000);
+      
+      if (minutes < 1) return 'Just now';
+      if (minutes < 60) return `${minutes}m ago`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours}h ago`;
+      return `${Math.floor(hours / 24)}d ago`;
+    }
+
+    async function loadRequests() {
+      const requestsContainer = document.getElementById('requests');
+      requestsContainer.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          Loading emergency requests...
+        </div>
+      `;
+      
+      try {
+        // Get driver location first
+        await getCurrentLocation();
+        
+        onValue(ref(db, 'users'), async (snapshot) => {
+          requestsContainer.innerHTML = '';
+          const users = snapshot.val();
+          allRequests = [];
+          
+          if (users) {
+            for (let key in users) {
+              const user = users[key];
+              if (user.location) {
+                // Calculate distance
+                const distance = driverLocation ? 
+                  calculateDistance(driverLocation.lat, driverLocation.lng, 
+                                  user.location.latitude, user.location.longitude) : 0;
+                
+                // Get destination address
+                const address = await getAddressFromCoords(
+                  user.location.latitude, 
+                  user.location.longitude
+                );
+                
+                allRequests.push({
+                  id: key,
+                  ...user,
+                  distance: distance,
+                  address: address,
+                  timestamp: user.timestamp || Date.now()
+                });
+              }
+            }
+            
+            // Sort by distance (nearest first)
+            allRequests.sort((a, b) => a.distance - b.distance);
+            displayRequests(allRequests);
+            updateStats(allRequests);
+          } else {
+            requestsContainer.innerHTML = `
+              <div class="no-requests">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>No Emergency Requests</h3>
+                <p>All clear! No active requests at the moment.</p>
+              </div>
+            `;
+            updateStats([]);
+          }
+        }, (error) => {
+          requestsContainer.innerHTML = `
+            <div class="no-requests">
+              <i class="fas fa-exclamation-triangle"></i>
+              <h3>Error Loading Requests</h3>
+              <p>Please check your connection and try again.</p>
+            </div>
+          `;
+          console.error("❌ Firebase Error:", error);
+        });
+      } catch (error) {
+        console.error('Location error:', error);
+        // Continue without location if permission denied
+        onValue(ref(db, 'users'), async (snapshot) => {
+          // ... same logic but without distance calculation
+        });
+      }
+    }
+
+    function displayRequests(requests) {
+      const requestsContainer = document.getElementById('requests');
+      
+      if (requests.length === 0) {
+        requestsContainer.innerHTML = `
+          <div class="no-requests">
+            <i class="fas fa-filter"></i>
+            <h3>No requests match your filter</h3>
+            <p>Try adjusting your filter criteria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      requestsContainer.innerHTML = requests.map(request => `
+        <div class="request-card" data-distance="${request.distance}">
+          <div class="request-header">
+            <div class="priority-badge">
+              <i class="fas fa-exclamation-triangle"></i> EMERGENCY
+            </div>
+            <div class="request-time">
+              <i class="fas fa-clock"></i>
+              ${getTimeAgo(request.timestamp)}
+            </div>
+          </div>
+          
+          <div class="patient-info">
+            <div class="info-row">
+              <div class="info-icon"><i class="fas fa-user"></i></div>
+              <div class="info-label">Patient:</div>
+              <div class="info-value">${request.name}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon"><i class="fas fa-phone"></i></div>
+              <div class="info-label">Phone:</div>
+              <div class="info-value">${request.number}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon"><i class="fas fa-tint"></i></div>
+              <div class="info-label">Blood:</div>
+              <div class="info-value">${request.bloodGroup}</div>
+            </div>
+          </div>
+
+          <div class="location-info">
+            <div class="info-row">
+              <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+              <div class="info-label">Location:</div>
+              <div class="info-value">${request.location.latitude.toFixed(6)}, ${request.location.longitude.toFixed(6)}</div>
+            </div>
+            <div class="destination-address">
+              <i class="fas fa-location-arrow"></i> ${request.address}
+            </div>
+            ${request.distance > 0 ? `
+              <div class="distance-badge">
+                <i class="fas fa-route"></i> ${request.distance.toFixed(2)} km away
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="request-actions">
+            <button class="action-btn accept-btn" onclick="acceptRequest('${request.id}')">
+              <i class="fas fa-check"></i> Accept Request
+            </button>
+            <button class="action-btn view-btn" onclick="viewLocation(${request.location.latitude}, ${request.location.longitude})">
+              <i class="fas fa-eye"></i> View Location
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateStats(requests) {
+      const totalRequests = requests.length;
+      const nearbyRequests = requests.filter(r => r.distance <= 5).length;
+      const avgDistance = requests.length > 0 ? 
+        (requests.reduce((sum, r) => sum + r.distance, 0) / requests.length).toFixed(1) : 0;
+
+      document.getElementById('totalRequests').textContent = totalRequests;
+      document.getElementById('nearbyRequests').textContent = nearbyRequests;
+      document.getElementById('avgDistance').textContent = avgDistance + ' km';
+    }
+
+    function filterRequests(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+
+      let filteredRequests = [...allRequests];
+      
+      switch(filter) {
+        case 'nearby':
+          filteredRequests = allRequests.filter(r => r.distance <= 5);
+          break;
+        case 'urgent':
+          filteredRequests = allRequests.filter(r => r.distance <= 10);
+          break;
+        case 'all':
+        default:
+          break;
+      }
+
+      displayRequests(filteredRequests);
+    }
+
     function acceptRequest(userNumber) {
       const driverID = localStorage.getItem('driverID');
       if (!driverID) {
         alert("Driver ID not found. Please log in again.");
         return;
       }
-    
+
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
           const driverLat = position.coords.latitude;
           const driverLng = position.coords.longitude;
-    
+
           set(ref(db, `accepted/${driverID}`), {
             driverID: driverID,
             userNumber: userNumber,
-            driverLocation: { latitude: driverLat, longitude: driverLng }
+            driverLocation: { latitude: driverLat, longitude: driverLng },
+            acceptedAt: Date.now()
           }).then(() => {
             set(ref(db, `drivers/${driverID}/location`), {
               latitude: driverLat,
               longitude: driverLng
             });
-    
+
             localStorage.setItem('acceptedUser', userNumber);
             window.location.href = "navigate.html";
           }).catch((error) => {
@@ -187,55 +760,182 @@
         alert("Geolocation is not supported by this browser.");
       }
     }
-    
+
+    function viewLocation(lat, lng) {
+      const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+      window.open(mapUrl, '_blank');
+    }
+
     function handleLogin(event) {
       event.preventDefault();
-      const driverName = document.getElementById('driverName').value;
-      const driverNumber = document.getElementById('driverNumber').value;
-      const driverID = document.getElementById('driverID').value;
-    
+      // Use unique IDs for form inputs
+      const driverName = document.getElementById('loginDriverName').value;
+      const driverNumber = document.getElementById('loginDriverNumber').value;
+      const driverID = document.getElementById('loginDriverID').value;
+
       if (!driverName || !driverNumber || !driverID) {
         alert("Please fill all fields!");
         return;
       }
-    
+
       set(ref(db, `drivers/${driverID}`), {
         name: driverName,
         number: driverNumber,
-        driverID: driverID
+        driverID: driverID,
+        loginTime: Date.now()
       }).then(() => {
         localStorage.setItem('driverID', driverID);
         localStorage.setItem('driverName', driverName);
         localStorage.setItem('driverNumber', driverNumber);
-    
+
         document.getElementById('loginSection').style.display = 'none';
         document.getElementById('requestsSection').style.display = 'block';
-    
+        document.getElementById('header').style.display = 'flex';
+        
+        // Update header with driver info
+        document.getElementById('headerDriverName').textContent = driverName;
+        document.getElementById('headerDriverID').textContent = `ID: ${driverID}`;
+
         loadRequests();
       }).catch((error) => {
         alert("Error saving driver details: " + error.message);
       });
     }
-    
+
+    function logout() {
+      localStorage.removeItem('driverID');
+      localStorage.removeItem('driverName');
+      localStorage.removeItem('driverNumber');
+      location.reload();
+    }
+
+    // Auto-refresh requests every 30 seconds
+    setInterval(() => {
+      if (document.getElementById('requestsSection').style.display !== 'none') {
+        loadRequests();
+      }
+    }, 30000);
+
     window.handleLogin = handleLogin;
+    window.acceptRequest = acceptRequest;
+    window.viewLocation = viewLocation;
+    window.filterRequests = filterRequests;
+    window.logout = logout;
+    window.loadRequests = loadRequests;
   </script>
 </head>
 <body>
-  <section id="loginSection">
-    <div class="container">
-      <h2>🚓 Driver Login</h2>
-      <form id="driverLoginForm" onsubmit="handleLogin(event)">
-        <input type="text" id="driverName" placeholder="Name" required />
-        <input type="text" id="driverNumber" placeholder="Phone Number" required />
-        <input type="text" id="driverID" placeholder="Driver ID" required />
-        <button class="login-btn" type="submit">Login</button>
-      </form>
+  <!-- Header (visible when logged in) -->
+  <header class="header" id="header" style="display: none;">
+    <div class="logo">
+      <i class="fas fa-ambulance"></i>
+      Ambulance Management System
     </div>
-  </section>
-  
-  <section id="requestsSection" style="display: none;">
-    <h2>🚨 Ambulance Requests</h2>
-    <div id="requests"></div>
-  </section>
+    <div class="driver-info">
+      <div>
+        <div id="headerDriverName">Driver Name</div>
+        <div id="headerDriverID">ID: 000</div>
+      </div>
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <!-- Login Section -->
+    <section id="loginSection">
+      <div class="login-container">
+        <h2 class="login-title">
+          <i class="fas fa-user-md"></i> Driver Login
+        </h2>
+        <form id="driverLoginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <i class="form-icon fas fa-user"></i>
+            <input type="text" id="loginDriverName" class="form-input" placeholder="Full Name" required />
+          </div>
+          <div class="form-group">
+            <i class="form-icon fas fa-phone"></i>
+            <input type="text" id="loginDriverNumber" class="form-input" placeholder="Phone Number" required />
+          </div>
+          <div class="form-group">
+            <i class="form-icon fas fa-id-badge"></i>
+            <input type="text" id="loginDriverID" class="form-input" placeholder="Driver ID" required />
+          </div>
+          <button class="login-btn" type="submit">
+            <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+          </button>
+        </form>
+      </div>
+    </section>
+    
+    <!-- Requests Section -->
+    <section id="requestsSection" style="display: none;">
+      <div class="requests-container">
+        <div class="requests-header">
+          <h2 class="requests-title">
+            <i class="fas fa-bell"></i> Emergency Requests
+          </h2>
+          
+          <!-- Statistics -->
+          <div class="requests-stats">
+            <div class="stat-card">
+              <div class="stat-number" id="totalRequests">0</div>
+              <div class="stat-label">Total Requests</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="nearbyRequests">0</div>
+              <div class="stat-label">Nearby (≤5km)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="avgDistance">0 km</div>
+              <div class="stat-label">Avg Distance</div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all" onclick="filterRequests('all')">
+              <i class="fas fa-list"></i> All Requests
+            </button>
+            <button class="filter-btn" data-filter="nearby" onclick="filterRequests('nearby')">
+              <i class="fas fa-map-marker-alt"></i> Nearby (≤5km)
+            </button>
+            <button class="filter-btn" data-filter="urgent" onclick="filterRequests('urgent')">
+              <i class="fas fa-exclamation-triangle"></i> Urgent (≤10km)
+            </button>
+          </div>
+        </div>
+
+        <!-- Requests Grid -->
+        <div class="requests-grid" id="requests">
+          <div class="loading">
+            <div class="spinner"></div>
+            Loading emergency requests...
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Check if driver is already logged in
+    window.onload = function() {
+      const driverID = localStorage.getItem('driverID');
+      const driverName = localStorage.getItem('driverName');
+      
+      if (driverID && driverName) {
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('requestsSection').style.display = 'block';
+        document.getElementById('header').style.display = 'flex';
+        
+        // Update header with driver info using correct IDs
+        document.getElementById('headerDriverName').textContent = driverName;
+        document.getElementById('headerDriverID').textContent = `ID: ${driverID}`;
+        
+        loadRequests();
+      }
+    };
+  </script>
 </body>
 </html>
